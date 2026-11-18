@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4.3%;
+    --foreground: 43 33% 94%;
+    --card: 0 0% 11%;
+    --card-foreground: 43 33% 94%;
+    --primary: 40 49% 57%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 43 33% 94%;
+    --muted: 0 0% 11%;
+    --muted-foreground: 36 7% 63%;
+    --accent: 40 20% 16%;
+    --accent-foreground: 43 33% 94%;
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 8% 17%;
+    --input: 30 8% 20%;
+    --ring: 40 49% 57%;
+    --silver: 40 49% 57%;
+    --radius: 0.2rem;
+  }
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body { @apply bg-background text-foreground font-sans antialiased; }
+  h1, h2, h3, h4 { @apply font-display font-normal tracking-[0.015em]; }
+  ::selection { background: hsl(var(--primary) / 0.35); color: hsl(var(--foreground)); }
+  a, button { -webkit-tap-highlight-color: transparent; }
+}
+
+@layer components {
+  .section { @apply py-20 md:py-28; }
+  .eyebrow { @apply text-[10px] font-medium uppercase tracking-[0.32em] text-silver md:text-[11px]; }
+  .editorial-rule { @apply h-px w-12 bg-primary; }
+  .luxury-link { @apply transition-colors duration-300 hover:text-primary; }
+  .product-frame { @apply overflow-hidden border border-transparent bg-card transition-all duration-500 group-hover:border-primary/40; }
+  .surface { @apply border border-border bg-card; }
+  .prose-policy h2 { @apply mt-8 mb-2 text-2xl; }
+  .prose-policy p, .prose-policy li { @apply text-muted-foreground leading-relaxed; }
+  .prose-policy ul { @apply list-disc pl-5 space-y-1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* Keeps editorial type consistent while the development server refreshes Tailwind config. */
+.font-display, h1, h2, h3, h4 { font-family: "Cormorant Garamond", Georgia, serif; }

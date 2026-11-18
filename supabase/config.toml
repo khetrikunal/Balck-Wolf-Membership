@@ -1,0 +1,15 @@
+project_id = "blackwolf"
+
+[functions.razorpay-webhook]
+verify_jwt = false
+
+[functions.create-payment-order]
+verify_jwt = true
+[functions.verify-payment]
+verify_jwt = true
+[functions.purchase-membership]
+verify_jwt = true
+[functions.renew-membership]
+verify_jwt = true
+[functions.create-product-order]
+verify_jwt = true
