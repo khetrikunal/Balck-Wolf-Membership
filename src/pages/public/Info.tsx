@@ -8,20 +8,35 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/input";
 import { PageHeader } from "@/components/common/PageHeader";
+import { Logo } from "@/components/common/Logo";
 import { fetchSetting, sendContact } from "@/services/catalog";
 import { errorMessage } from "@/lib/utils";
 
 export function About() {
   return (
     <>
-      <PageHeader eyebrow="Our story" title="About Black Wolf" />
-      <div className="container prose-policy max-w-3xl py-12">
-        <p className="text-lg text-foreground">BLACK WOLF is a premium streetwear label for people who move in their own direction.</p>
-        <p className="mt-4">We design T-shirts and track pants, print custom artwork on request, and run a members club that rewards our community with exclusive pricing and early access.</p>
-        <h2>What we stand for</h2>
-        <ul><li>Quality fabrics and honest pricing</li><li>Designs you can personalise</li><li>A community that gets rewarded for sticking around</li></ul>
-        <Button className="mt-8" asChild><Link to="/shop">Explore the collection</Link></Button>
-      </div>
+      <PageHeader eyebrow="Our story" title="About Black Wolf" subtitle="An independent point of view, made wearable." />
+      <section className="container grid gap-10 py-16 md:grid-cols-[.75fr_1.25fr] md:items-center md:py-24">
+        <div className="flex min-h-72 items-center justify-center border border-border bg-black p-8 md:min-h-[420px]"><Logo className="h-32 w-64 md:h-40 md:w-80" /></div>
+        <div className="max-w-2xl">
+          <p className="eyebrow mb-4">Strength · confidence · individuality</p>
+          <h2 className="text-5xl leading-[.92] md:text-7xl">For those who stand apart.</h2>
+          <p className="mt-6 text-base leading-8 text-muted-foreground">BLACK WOLF represents strength, confidence and individuality. Created for those who stand apart, our clothing combines bold identity with timeless style.</p>
+          <p className="mt-4 text-sm leading-7 text-muted-foreground">We design T-shirts and track pants, print custom artwork on request, and run a members club that rewards our community with exclusive pricing and early access.</p>
+          <Button className="mt-8" size="lg" asChild><Link to="/shop">Explore the collection</Link></Button>
+        </div>
+      </section>
+      <section className="border-y border-border bg-secondary"><div className="container grid gap-8 py-14 sm:grid-cols-2 md:grid-cols-4 md:py-20">
+        {[
+          { src: "/download.jpg", alt: "Dark contemporary clothing store interior", label: "A considered edit" },
+          { src: "/M-Armor%20Drop%20Shoulder%20T-Shirts_Sizes_%20S,%20M,%20L,%20XL,%20XXL_Buy%20Now_%20+92%20326%200069694.jpg", alt: "Black graphic drop shoulder T-shirt detail", label: "Graphic expression" },
+          { src: "/Jujutsu%20Kaisen%20Manga%20Gojo%20Satoru%20Graphic%20T-shirt%20Vintage%20Washed%20T%20Shirt%20Men%20Women%20Clothing%20Oversized.jpg", alt: "Washed black oversized graphic T-shirt, front and back", label: "Everyday form" },
+          { src: "/download%20(1).jpg", alt: "Streetwear collection arranged on a retail rail", label: "Made to be worn" },
+        ].map((item) => <figure key={item.src} className="group overflow-hidden">
+          <div className="aspect-[4/5] overflow-hidden border border-border"><img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]" /></div>
+          <figcaption className="mt-3 text-[9px] uppercase tracking-[0.2em] text-primary">{item.label}</figcaption>
+        </figure>)}
+      </div></section>
     </>
   );
 }

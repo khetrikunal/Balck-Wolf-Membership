@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -6,6 +6,7 @@ import { ArrowRight, Crown, MoveUpRight, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProductGrid } from "@/components/product/ProductCard";
+import { Logo } from "@/components/common/Logo";
 import { QueryBoundary } from "@/components/common/States";
 import { fetchBestSellers, fetchProducts, fetchSetting, fetchTestimonials, subscribeNewsletter } from "@/services/catalog";
 import { errorMessage } from "@/lib/utils";
@@ -35,6 +36,18 @@ export default function Home() {
   const testimonials = useQuery({ queryKey: ["testimonials"], queryFn: fetchTestimonials });
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [videoEnabled, setVideoEnabled] = useState(false);
+
+  useEffect(() => {
+    const viewport = window.matchMedia("(min-width: 768px)");
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setVideoEnabled(viewport.matches && !motion.matches);
+    update();
+    viewport.addEventListener("change", update);
+    motion.addEventListener("change", update);
+    return () => { viewport.removeEventListener("change", update); motion.removeEventListener("change", update); };
+  }, []);
 
   async function subscribe(e: React.FormEvent) {
     e.preventDefault(); setBusy(true);
@@ -44,26 +57,69 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative isolate overflow-hidden border-b border-border">
-        <div className="absolute inset-0 -z-20 bg-[url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=2000&q=85')] bg-cover bg-[center_38%] opacity-40 grayscale md:bg-[center_30%]" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/80 to-background/55 md:via-background/70" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-background/75 via-transparent to-background/20" />
-        <div className="container grid min-h-[78vh] items-end gap-10 py-16 md:min-h-[calc(100svh-74px)] md:grid-cols-[1.15fr_.85fr] md:items-center md:py-20">
+      <section className="relative isolate min-h-[calc(100svh-72px)] overflow-hidden border-b border-border">
+        {(!videoEnabled || videoFailed) && <img src="/download.jpg" alt="" fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-40 grayscale contrast-125" />}
+        {videoEnabled && !videoFailed && <video className="absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-50 grayscale contrast-125" autoPlay muted loop playsInline preload="metadata" poster="/download.jpg" aria-hidden="true" tabIndex={-1} onError={() => setVideoFailed(true)}>
+          <source src="/Landing%20Page.mp4" type="video/mp4" />
+        </video>}
+        <div className="red-glow absolute inset-0 -z-10" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/70 to-background/45 md:via-background/65" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-background/80 via-transparent to-background/25" />
+        <div className="container grid min-h-[calc(100svh-72px)] items-end gap-10 py-14 md:grid-cols-[1.15fr_.85fr] md:items-center md:py-20">
           <div className="max-w-2xl pb-4 md:pb-0">
-            <p className="eyebrow mb-7 flex items-center gap-3"><span className="editorial-rule" />Independent by nature · Est. 2024</p>
-            <h1 className="max-w-3xl text-[clamp(4.5rem,12vw,10rem)] leading-[.76] tracking-[-0.035em]">{hero.data?.headline ?? "BLACK WOLF"}</h1>
-            <p className="mt-8 max-w-md text-sm leading-7 text-foreground/75 md:text-base">{hero.data?.subheadline ?? "Premium streetwear. Made to stand apart."}</p>
+            <Logo className="mb-5 h-16 w-36 md:mb-7 md:h-20 md:w-44" />
+            <p className="eyebrow mb-5 flex items-center gap-3"><span className="editorial-rule" />Independent by nature</p>
+            <h1 className="max-w-3xl text-[clamp(5rem,15vw,13rem)] leading-[.78] tracking-[-0.025em]">{hero.data?.headline ?? "BLACK WOLF"}</h1>
+            <p className="mt-7 max-w-xl text-base font-medium uppercase leading-7 tracking-[0.12em] text-foreground md:text-lg">Wear your power. Own your identity.</p>
+            <p className="font-accent mt-1 max-w-md text-xl text-foreground/75 md:text-2xl">Made for the uncommon.</p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button size="lg" className="min-h-12 px-8" asChild><Link to="/shop">Explore the collection <MoveUpRight className="h-4 w-4" /></Link></Button>
+              <Button size="lg" className="min-h-12 px-8" asChild><Link to="/shop">Explore collection <MoveUpRight className="h-4 w-4" /></Link></Button>
               <Button size="lg" variant="outline" className="min-h-12 px-8" asChild><Link to="/about">Our story</Link></Button>
             </div>
-            <div className="mt-14 flex items-center gap-4 text-[9px] uppercase tracking-[0.24em] text-muted-foreground">
+            <div className="mt-10 flex items-center gap-4 text-sm uppercase tracking-[0.2em] text-muted-foreground">
               <span className="text-primary">01</span><span className="h-px w-12 bg-border"/><span>New season · 2026</span>
             </div>
           </div>
           <div className="hidden self-end justify-self-end pb-12 text-right md:block">
-            <p className="font-display text-5xl italic leading-none text-foreground/80">Made for<br/>the uncommon.</p>
-            <p className="mt-4 text-[9px] uppercase tracking-[0.25em] text-primary">Black Wolf Atelier</p>
+            <p className="font-accent text-5xl leading-none text-foreground/90">Made for<br/>the uncommon.</p>
+            <p className="mt-4 text-sm uppercase tracking-[0.2em] text-primary">Black Wolf Atelier</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="overflow-hidden border-b border-border bg-ink-2 py-4" aria-label="Strength, confidence, individuality">
+        <div className="marquee-track flex w-max items-center gap-8 whitespace-nowrap font-display text-3xl uppercase tracking-[0.05em] text-transparent [-webkit-text-stroke:1px_rgba(243,239,232,.55)] md:text-4xl" aria-hidden="true">
+          {Array.from({ length: 4 }, (_, i) => <span key={i}>Strength <i className="not-italic text-primary">·</i> Confidence <i className="not-italic text-primary">·</i> Individuality <i className="not-italic text-primary">·</i></span>)}
+        </div>
+      </div>
+
+      <section className="section container">
+        <div className="grid gap-8 md:grid-cols-[.78fr_1.22fr] md:items-end">
+          <div className="space-y-5">
+            <Logo className="h-16 w-36" />
+            <p className="eyebrow">Identity · attitude · intent</p>
+            <h2 className="text-5xl leading-[.92] md:text-7xl">Strength in every detail.</h2>
+          </div>
+          <p className="max-w-2xl pb-1 text-base leading-8 text-muted-foreground md:justify-self-end md:text-lg">BLACK WOLF represents strength, confidence and individuality. Created for those who stand apart, our clothing combines bold identity with timeless style.</p>
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-secondary/70 py-16 md:py-24">
+        <div className="container">
+          <div className="mb-9 flex items-end justify-between md:mb-12">
+            <div><p className="eyebrow mb-3">A visual study · BLACK WOLF</p><h2 className="text-5xl leading-none md:text-7xl">Pieces with presence.</h2></div>
+            <Link to="/shop" className="hidden items-center gap-2 border-b border-primary/50 pb-2 text-[10px] uppercase tracking-[0.18em] transition-colors hover:text-primary md:flex">View the collection <ArrowRight className="h-3.5 w-3.5" /></Link>
+          </div>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+            {[
+              { src: "/M-Armor%20Drop%20Shoulder%20T-Shirts_Sizes_%20S,%20M,%20L,%20XL,%20XXL_Buy%20Now_%20+92%20326%200069694.jpg", alt: "Black graphic drop shoulder T-shirt detail", label: "Graphic form", ratio: "aspect-[4/5]" },
+              { src: "/download.jpg", alt: "Dark contemporary clothing store interior", label: "The atmosphere", ratio: "aspect-[4/5] md:mt-12" },
+              { src: "/Jujutsu%20Kaisen%20Manga%20Gojo%20Satoru%20Graphic%20T-shirt%20Vintage%20Washed%20T%20Shirt%20Men%20Women%20Clothing%20Oversized.jpg", alt: "Washed black oversized graphic T-shirt, front and back", label: "Washed cotton", ratio: "aspect-[4/5]" },
+              { src: "/download%20(1).jpg", alt: "Curated streetwear rail in a clothing store", label: "Everyday icons", ratio: "aspect-[4/5] md:mt-12" },
+            ].map((item) => <Link to="/shop" key={item.src} className={`group relative ${item.ratio} overflow-hidden border border-border`}>
+              <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035] group-hover:grayscale" />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 pb-4 pt-12 md:px-5 md:pb-5"><p className="text-[9px] uppercase tracking-[0.2em] text-primary">BLACK WOLF · EDIT</p><p className="mt-1 font-display text-xl md:text-2xl">{item.label}</p></div>
+            </Link>)}
           </div>
         </div>
       </section>
@@ -99,11 +155,11 @@ export default function Home() {
 
       <div id="collections"><Section eyebrow="Members only" title="Exclusive collection" to="/shop?category=exclusive-collections"><ProductRail query={exclusive} emptyTitle="Exclusive collection coming soon" /></Section></div>
 
-      <section className="border-y border-border bg-secondary">
+      <section className="border-y border-border bg-bone text-background">
         <div className="container section flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-          <div><Palette className="mb-5 h-6 w-6 text-primary" strokeWidth={1.2} /><p className="eyebrow mb-3">Made personal</p><h2 className="text-5xl leading-[.9] md:text-7xl">Your idea.<br/>Our craft.</h2>
-            <p className="mt-4 max-w-lg text-sm leading-7 text-muted-foreground">Bring your artwork to life on premium tees and track pants, made with care and attention to detail.</p></div>
-          <Button size="lg" variant="outline" asChild><Link to="/custom">Start a custom order <ArrowRight className="h-4 w-4" /></Link></Button>
+          <div><Palette className="mb-5 h-7 w-7 text-primary" strokeWidth={1.2} /><p className="mb-3 text-sm font-medium uppercase tracking-[0.22em] text-primary">Made personal</p><h2 className="text-5xl leading-[.9] md:text-7xl">Your idea.<br/>Our craft.</h2>
+            <p className="mt-4 max-w-lg text-base leading-7 text-background/75">Bring your artwork to life on premium tees and track pants, made with care and attention to detail.</p></div>
+          <Button size="lg" asChild><Link to="/custom">Start a custom order <ArrowRight className="h-4 w-4" /></Link></Button>
         </div>
       </section>
 

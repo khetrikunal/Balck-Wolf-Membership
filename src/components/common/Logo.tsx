@@ -6,9 +6,8 @@ import { cn } from "@/lib/utils";
  */
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2", className)}>
-      <img src="/logo.svg" alt="" className="h-8 w-auto" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-      <span className="font-display text-[23px] font-semibold tracking-[0.14em] sm:text-[25px]">BLACK WOLF</span>
+    <span className={cn("brand-logo-window relative inline-flex h-12 w-28 shrink-0 items-center justify-center overflow-hidden bg-black mix-blend-screen sm:w-32", className)}>
+      <img src="/01%20Black%20Wolf%20Logo.png" alt="BLACK WOLF" className="absolute left-1/2 top-1/2 h-auto w-[350%] max-w-none -translate-x-1/2 -translate-y-1/2" />
     </span>
   );
 }

@@ -9,6 +9,8 @@ import { displayPrice, productImage } from "@/lib/pricing";
 import { cn, formatINR } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useCartMutations, useIsMember } from "@/hooks/useShop";
+import { Logo } from "@/components/common/Logo";
+import { RichDescription } from "@/components/common/RichDescription";
 
 export default function ProductDetails() {
   const { slug = "" } = useParams();
@@ -70,7 +72,7 @@ export default function ProductDetails() {
         {!isMember && member != null && member < regular && (
           <p className="mt-3 text-xs text-primary">Members pay {formatINR(member)}. <Link to="/membership" className="underline underline-offset-4">Discover membership</Link></p>)}
         {discounted && <p className="mt-3 text-xs text-primary">Member price applied</p>}
-        {p.description && <p className="mt-6 whitespace-pre-line text-sm leading-7 text-muted-foreground">{p.description}</p>}
+        {p.description && <div className="mt-6"><RichDescription text={p.description} /></div>}
 
         {variants.length === 0 ? <p className="mt-8 text-muted-foreground">Currently unavailable.</p> : (
           <div className="mt-8 space-y-7">
@@ -110,9 +112,13 @@ export default function ProductDetails() {
         )}
         <div className="mt-10 divide-y divide-border border-y border-border">
           <details className="group py-4" open><summary className="flex cursor-pointer list-none items-center justify-between text-[10px] uppercase tracking-[0.18em]">Material & care <span className="text-primary transition-transform group-open:rotate-45">+</span></summary>
-            <p className="mt-4 max-w-lg text-xs leading-6 text-muted-foreground">Fabric composition is listed on the garment label. For care, wash inside out with similar colours on a gentle cycle. Do not bleach; reshape and air dry. Follow the care label for product-specific instructions.</p></details>
+            <p className="mt-4 max-w-lg text-base leading-7 text-muted-foreground">Fabric composition is listed on the garment label. For care, wash inside out with similar colours on a gentle cycle. Do not bleach; reshape and air dry. Follow the care label for product-specific instructions.</p></details>
           <details className="group py-4"><summary className="flex cursor-pointer list-none items-center justify-between text-[10px] uppercase tracking-[0.18em]">Shipping & returns <span className="text-primary transition-transform group-open:rotate-45">+</span></summary>
-            <p className="mt-4 max-w-lg text-xs leading-6 text-muted-foreground">Available delivery options and shipping charges are shown at checkout. For return information, see our <Link className="text-primary underline underline-offset-4" to="/refund-policy">returns policy</Link>.</p></details>
+            <p className="mt-4 max-w-lg text-base leading-7 text-muted-foreground">Available delivery options and shipping charges are shown at checkout. For return information, see our <Link className="text-primary underline underline-offset-4" to="/refund-policy">returns policy</Link>.</p></details>
+        </div>
+        <div className="mt-8 flex items-center gap-4">
+          <Logo className="h-10 w-24" />
+          <p className="text-[9px] uppercase leading-5 tracking-[0.15em] text-muted-foreground">BLACK WOLF<br/><span className="text-primary">Wear your power.</span></p>
         </div>
       </div>
       </div>

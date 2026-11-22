@@ -1,10 +1,12 @@
 import { AlertCircle, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/common/Logo";
 import { errorMessage } from "@/lib/utils";
 
 export const Loading = ({ label = "Loading…" }: { label?: string }) => (
-  <div className="flex items-center justify-center gap-2 py-20 text-muted-foreground" role="status">
-    <Loader2 className="h-5 w-5 animate-spin" /> {label}
+  <div className="flex min-h-56 flex-col items-center justify-center gap-5 py-20 text-muted-foreground" role="status">
+    <Logo className="h-16 w-36" />
+    <span className="flex items-center gap-2 text-xs uppercase tracking-[0.18em]"><Loader2 className="h-4 w-4 animate-spin text-primary" /> {label}</span>
   </div>
 );
 

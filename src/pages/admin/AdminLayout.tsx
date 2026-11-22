@@ -13,7 +13,7 @@ const items: NavItem[] = [
   { to: "/admin/categories", label: "Categories", icon: FolderTree, adminOnly: true },
   { to: "/admin/designs", label: "Design library", icon: Image, adminOnly: true },
   { to: "/admin/plans", label: "Membership plans", icon: Crown, adminOnly: true },
-  { to: "/admin/members", label: "Members", icon: UserCheck },
+  { to: "/admin/members", label: "Membership management", icon: UserCheck, adminOnly: true },
   { to: "/admin/customers", label: "Customers", icon: Users },
   { to: "/admin/payments", label: "Payments", icon: Receipt, adminOnly: true },
   { to: "/admin/coupons", label: "Coupons", icon: Tag, adminOnly: true },

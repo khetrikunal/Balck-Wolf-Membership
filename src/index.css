@@ -4,41 +4,56 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4.3%;
-    --foreground: 43 33% 94%;
-    --card: 0 0% 11%;
-    --card-foreground: 43 33% 94%;
-    --primary: 40 49% 57%;
-    --primary-foreground: 0 0% 5%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 43 33% 94%;
-    --muted: 0 0% 11%;
-    --muted-foreground: 36 7% 63%;
-    --accent: 40 20% 16%;
-    --accent-foreground: 43 33% 94%;
+    --ink: #0A0A0B;
+    --ink-2: #121214;
+    --ink-3: #1B1B1F;
+    --bone: #F3EFE8;
+    --mute: #8C8C94;
+    --blood: #E10600;
+    --gold: #C9A24B;
+    --background: 240 5% 4%;
+    --foreground: 40 28% 93%;
+    --card: 240 5% 7%;
+    --card-foreground: 40 28% 93%;
+    --primary: 2 100% 44%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 7%;
+    --secondary-foreground: 40 28% 93%;
+    --muted: 240 4% 11%;
+    --muted-foreground: 228 3% 58%;
+    --accent: 2 30% 14%;
+    --accent-foreground: 40 28% 93%;
     --destructive: 0 72% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 8% 17%;
-    --input: 30 8% 20%;
-    --ring: 40 49% 57%;
-    --silver: 40 49% 57%;
+    --border: 240 4% 17%;
+    --input: 240 4% 20%;
+    --ring: 2 100% 44%;
+    --silver: 2 100% 44%;
     --radius: 0.2rem;
   }
   * { @apply border-border; }
-  html { scroll-behavior: smooth; }
-  body { @apply bg-background text-foreground font-sans antialiased; }
+  html { scroll-behavior: smooth; background: var(--ink); }
+  body { @apply bg-background text-foreground font-sans antialiased; min-width: 320px; font-size: 16px; line-height: 1.65; }
+  body::before { content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .045; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E"); }
   h1, h2, h3, h4 { @apply font-display font-normal tracking-[0.015em]; }
   ::selection { background: hsl(var(--primary) / 0.35); color: hsl(var(--foreground)); }
   a, button { -webkit-tap-highlight-color: transparent; }
 }
 
 @layer components {
-  .section { @apply py-20 md:py-28; }
-  .eyebrow { @apply text-[10px] font-medium uppercase tracking-[0.32em] text-silver md:text-[11px]; }
+  .section { @apply py-16 md:py-24; }
+  .eyebrow { @apply text-xs font-medium uppercase tracking-[0.22em] text-silver md:text-sm; }
   .editorial-rule { @apply h-px w-12 bg-primary; }
   .luxury-link { @apply transition-colors duration-300 hover:text-primary; }
-  .product-frame { @apply overflow-hidden border border-transparent bg-card transition-all duration-500 group-hover:border-primary/40; }
+  .product-frame { @apply overflow-hidden border border-transparent bg-card transition-all duration-500 group-hover:border-primary/60; }
   .surface { @apply border border-border bg-card; }
+  .red-glow { background: radial-gradient(ellipse at 70% 45%, rgb(225 6 0 / .18), transparent 55%); }
+  .font-accent { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; }
+  .marquee-track { animation: marquee 28s linear infinite; }
+  .marquee-track:hover { animation-play-state: paused; }
+  .skeleton { background: linear-gradient(100deg, hsl(var(--muted)) 20%, hsl(var(--border)) 38%, hsl(var(--muted)) 56%); background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @keyframes shimmer { to { background-position-x: -200%; } }
   .prose-policy h2 { @apply mt-8 mb-2 text-2xl; }
   .prose-policy p, .prose-policy li { @apply text-muted-foreground leading-relaxed; }
   .prose-policy ul { @apply list-disc pl-5 space-y-1; }
@@ -48,5 +63,6 @@
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
-/* Keeps editorial type consistent while the development server refreshes Tailwind config. */
-.font-display, h1, h2, h3, h4 { font-family: "Cormorant Garamond", Georgia, serif; }
+.font-display, h1, h2, h3, h4 { font-family: "Bebas Neue", Impact, sans-serif; }
+.font-accent { font-family: "Cormorant Garamond", Georgia, serif; }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; transform: none; } }

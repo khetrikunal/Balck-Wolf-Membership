@@ -88,9 +88,9 @@ export default function App() {
             <Route path="inventory" element={<AInventory />} />
             <Route path="custom-requests" element={<ACustom />} />
             <Route path="quotations" element={<AQuotes />} />
-            <Route path="members" element={<AMembers />} />
             <Route path="customers" element={<ACustomers />} />
             <Route element={<RequireAdmin />}>
+              <Route path="members" element={<AMembers />} />
               <Route path="products" element={<Products />} />
               <Route path="categories" element={<ACategories />} />
               <Route path="designs" element={<ADesigns />} />

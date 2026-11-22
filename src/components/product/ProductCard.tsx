@@ -28,23 +28,23 @@ export function ProductCard({ product }: { product: Product }) {
               {imgs[1] && <img src={publicImageUrl(imgs[1].storage_path)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100" />}
             </>
           ) : (
-            <div className="flex h-full items-center justify-center bg-[#171614] font-display text-3xl tracking-[0.16em] text-primary/65">BLACK WOLF</div>
+            <div className="flex h-full items-center justify-center bg-ink-2 font-display text-4xl tracking-[0.1em] text-foreground/70">BLACK WOLF</div>
           )}
           <div className="absolute left-3 top-3 flex flex-col gap-1.5">
-            {product.is_new_arrival && <span className="border border-primary/50 bg-background/80 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.2em] text-primary backdrop-blur">New season</span>}
-            {product.is_exclusive && <span className="border border-border bg-background/80 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.2em] text-foreground backdrop-blur">Exclusive</span>}
-            {sold && <span className="bg-background/85 px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">Sold out</span>}
+            {product.is_new_arrival && <span className="border border-primary bg-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary-foreground backdrop-blur">New</span>}
+            {product.is_exclusive && <span className="border border-gold/70 bg-background/90 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-gold backdrop-blur">Exclusive</span>}
+            {sold && <span className="border border-foreground/70 bg-background/90 px-3 py-1.5 text-xs font-medium uppercase tracking-[0.16em] text-foreground">Sold out</span>}
           </div>
           <span className="absolute inset-x-0 bottom-0 translate-y-full border-t border-primary/30 bg-background/90 py-3 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-foreground backdrop-blur transition-transform duration-300 group-hover:translate-y-0">Discover the piece</span>
         </div>
         <div className="mt-4 space-y-1.5">
-          {product.categories?.name && <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{product.categories.name}</p>}
-          <h3 className="font-sans text-[13px] font-medium normal-case tracking-[0.02em]">{product.name}</h3>
-          {product.description && <p className="line-clamp-2 max-w-sm text-xs leading-5 text-muted-foreground">{product.description}</p>}
+          {product.categories?.name && <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{product.categories.name}</p>}
+          <h3 className="font-sans text-base font-medium normal-case tracking-[0.02em]">{product.name}</h3>
+          {product.description && <p className="line-clamp-2 max-w-sm text-sm leading-6 text-muted-foreground">{product.description.replace(/^#{1,6}\s*/gm, "").replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1")}</p>}
           <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1 text-sm">
             <span className="font-medium">{formatINR(price)}</span>
             {discounted && <span className="text-xs text-muted-foreground line-through">{formatINR(regular)}</span>}
-            {!isMember && member != null && member < regular && <span className="text-[10px] uppercase tracking-wider text-primary">Member {formatINR(member)}</span>}
+            {!isMember && member != null && member < regular && <span className="text-sm uppercase tracking-wide text-gold">Members {formatINR(member)}</span>}
           </div>
         </div>
       </Link>

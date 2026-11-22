@@ -67,11 +67,32 @@ export async function savePlan(p: Partial<MembershipPlan>) {
   const row = { name: p.name, description: p.description, price: p.price, duration: p.duration_unit === "lifetime" ? null : p.duration, duration_unit: p.duration_unit, benefits: p.benefits ?? [], status: p.status ?? "inactive" };
   const { error } = p.id ? await supabase.from("membership_plans").update(row).eq("id", p.id) : await supabase.from("membership_plans").insert(row); ok(error);
 }
-export async function adminMembers() {
-  const { data, error } = await supabase.from("memberships").select("*, profiles(full_name,email)").order("created_at", { ascending: false }); ok(error);
-  return data as unknown as (Membership & { profiles: { full_name: string | null; email: string | null } })[];
+export async function deletePlan(id: string) { const { error } = await supabase.from("membership_plans").delete().eq("id", id); ok(error); }
+export interface MembershipOverviewRow {
+  id: string; full_name: string | null; email: string | null; phone: string | null; joined_at: string;
+  membership_id: string | null; plan_id: string | null; plan_snapshot: MembershipPlan | null; raw_status: Membership["status"] | null;
+  current_status: string; starts_at: string | null; expires_at: string | null; purchased_at: string | null;
+  source: "purchase" | "admin" | null; assigned_by: string | null; membership_number: string | null;
+  payment_status: string | null; transaction_id: string | null;
 }
-export async function setMembershipStatus(id: string, status: Membership["status"]) { const { error } = await supabase.from("memberships").update({ status }).eq("id", id); ok(error); }
+export async function adminMembershipOverview(filters: { search: string; status: string; planId: string; purchaseFrom: string; purchaseTo: string; expiryFrom: string; expiryTo: string; sort: string; limit: number; offset: number }) {
+  const { data, error } = await supabase.rpc("admin_membership_overview", {
+    p_search: filters.search, p_status: filters.status, p_plan_id: filters.planId || null,
+    p_purchase_from: filters.purchaseFrom || null, p_purchase_to: filters.purchaseTo || null,
+    p_expiry_from: filters.expiryFrom || null, p_expiry_to: filters.expiryTo || null,
+    p_sort: filters.sort, p_limit: filters.limit, p_offset: filters.offset,
+  }); ok(error);
+  return data as { total: number; rows: MembershipOverviewRow[] };
+}
+export async function searchMembershipUsers(search: string) { const { data, error } = await supabase.rpc("admin_search_membership_users", { p_search: search }); ok(error); return data as { id: string; full_name: string | null; email: string | null; phone: string | null }[]; }
+export async function assignMembership(input: { userId: string; planId: string; startsAt: string; expiresAt: string; extend: boolean }) {
+  const { data, error } = await supabase.rpc("admin_assign_membership", { p_user_id: input.userId, p_plan_id: input.planId, p_starts_at: input.startsAt || null, p_expires_at: input.expiresAt || null, p_extend: input.extend }); ok(error); return data as string;
+}
+export async function setMembershipStatus(id: string, status: "active" | "suspended" | "cancelled") { const { error } = await supabase.rpc("admin_set_membership_status", { p_membership_id: id, p_status: status }); ok(error); }
+export async function adminMembershipStats() { const { data, error } = await supabase.rpc("admin_membership_stats"); ok(error); return data as Record<string, any>; }
+export async function adminMembershipHistory(userId: string) {
+  const { data, error } = await supabase.from("membership_transactions").select("*, payments(razorpay_payment_id,status)").eq("user_id", userId).order("created_at", { ascending: false }); ok(error); return data as any[];
+}
 
 // ----- custom designs -----
 export async function adminCustomRequests() {

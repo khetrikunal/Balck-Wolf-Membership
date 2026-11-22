@@ -8,10 +8,14 @@ export default {
     container: { center: true, padding: "1rem", screens: { "2xl": "1360px" } },
     extend: {
       fontFamily: {
-        display: ["'Cormorant Garamond'", "Georgia", "serif"],
+        display: ["'Bebas Neue'", "Impact", "sans-serif"],
+        accent: ["'Cormorant Garamond'", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       colors: {
+        "ink-2": "var(--ink-2)",
+        bone: "var(--bone)",
+        gold: "var(--gold)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -115,7 +115,7 @@ export function MembershipPage() {
             <div><p className="eyebrow">Status</p><p className="mt-1"><Badge status={live ? "active" : m.status === "active" ? "expired" : m.status} /></p></div>
             <div><p className="eyebrow">Member since</p><p className="mt-1 text-lg">{formatDate(m.starts_at)}</p></div>
             <div><p className="eyebrow">Expires</p><p className="mt-1 text-lg">{m.status === "active" && !m.expires_at ? "Never (lifetime)" : formatDate(m.expires_at)}</p></div>
-            <div className="md:col-span-4"><Button asChild variant="outline"><Link to="/membership">{live ? "Renew / extend" : "Renew membership"}</Link></Button></div>
+            <div className="md:col-span-4"><p className="eyebrow mb-2">Your benefits</p><ul className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground">{(m.plan_snapshot?.benefits ?? []).map((b) => <li key={b}>· {b}</li>)}</ul><div className="flex flex-wrap gap-2"><Button asChild variant="outline"><Link to="/membership">{live ? "Renew / extend" : "Renew membership"}</Link></Button><Button asChild><Link to="/membership">Explore an upgrade</Link></Button></div></div>
           </CardContent></Card>
           {card && m.membership_number && <MembershipCard number={m.membership_number} name={profile.data || user?.email || "Member"} plan={m.plan_snapshot?.name} issued={card.issued_at} expires={m.expires_at} status={live ? "active" : m.status === "active" ? "expired" : m.status} token={card.verification_token} />}
           <section><h2 className="mb-3 text-3xl">Membership history</h2>
