@@ -47,14 +47,15 @@ export function Overview() {
   const m = useQuery({ queryKey: ["memberships", user?.id], queryFn: acc.fetchMyMemberships });
   const o = useQuery({ queryKey: ["orders", user?.id], queryFn: acc.fetchMyOrders });
   const cur = m.data?.[0];
-  return (<><H>Welcome back</H>
-    <div className="grid gap-4 md:grid-cols-3">
-      <Card><CardHeader><CardTitle>Membership</CardTitle></CardHeader><CardContent>
-        {cur ? <><Badge status={cur.status} /><p className="mt-2 text-sm text-muted-foreground">{cur.plan_snapshot?.name}</p></> : <p className="text-sm text-muted-foreground">Not a member yet.</p>}
-        <Button variant="link" className="mt-3" asChild><Link to={cur ? "/account/membership" : "/membership"}>{cur ? "Manage" : "View plans"}</Link></Button></CardContent></Card>
-      <Card><CardHeader><CardTitle>Orders</CardTitle></CardHeader><CardContent><p className="font-display text-5xl">{o.data?.length ?? "–"}</p><Button variant="link" className="mt-3" asChild><Link to="/account/orders">View orders</Link></Button></CardContent></Card>
-      <Card><CardHeader><CardTitle>Custom designs</CardTitle></CardHeader><CardContent><p className="text-sm text-muted-foreground">Upload artwork, get a quote.</p><Button variant="link" className="mt-3" asChild><Link to="/account/custom">Open requests</Link></Button></CardContent></Card>
-    </div></>);
+  return (<div className="space-y-9">
+    <div><p className="eyebrow">Your BLACK WOLF account</p><h2 className="mt-2 text-4xl md:text-5xl">Welcome back</h2><p className="mt-2 max-w-2xl text-base text-muted-foreground">Your orders, membership and saved pieces, all in one place.</p></div>
+    <div className="grid gap-8 border-y border-border py-7 md:grid-cols-2 md:gap-12">
+      <section><p className="eyebrow">Membership</p><div className="mt-3 flex flex-wrap items-center gap-3">{cur ? <><h3 className="font-sans text-xl font-medium normal-case tracking-normal">{cur.plan_snapshot?.name}</h3><Badge status={cur.status} /></> : <h3 className="font-sans text-xl font-medium normal-case tracking-normal">Not a member yet</h3>}</div>
+        <p className="mt-2 text-base text-muted-foreground">{cur ? "Your member benefits and card are ready to view." : "Join the pack for member pricing and early access."}</p><Link className="mt-4 inline-flex min-h-11 items-center text-sm uppercase tracking-wider text-primary hover:underline" to={cur ? "/account/membership" : "/membership"}>{cur ? "Manage membership →" : "Explore membership →"}</Link></section>
+      <section><p className="eyebrow">Recent orders</p>{o.data?.length ? <ul className="mt-3 divide-y divide-border">{o.data.slice(0, 3).map((order) => <li key={order.id} className="flex items-center justify-between gap-4 py-3"><div><Link to={`/account/orders/${order.id}`} className="text-base font-medium hover:text-primary">{order.order_number}</Link><p className="text-sm text-muted-foreground">{formatDate(order.created_at)}</p></div><Badge status={order.status} /></li>)}</ul> : <p className="mt-3 text-base text-muted-foreground">No orders yet. <Link to="/shop" className="text-primary underline">Start shopping</Link>.</p>}<Link className="mt-3 inline-flex min-h-11 items-center text-sm uppercase tracking-wider text-primary hover:underline" to="/account/orders">View all orders →</Link></section>
+    </div>
+    <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground"><Link to="/account/profile" className="hover:text-primary">Profile</Link><Link to="/account/addresses" className="hover:text-primary">Addresses</Link><Link to="/account/wishlist" className="hover:text-primary">Wishlist</Link><Link to="/account/custom" className="hover:text-primary">Custom designs</Link></div>
+  </div>);
 }
 
 // ---------- Orders ----------

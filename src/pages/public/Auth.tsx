@@ -34,16 +34,17 @@ function Shell({ title, children, footer }: { title: string; children: React.Rea
 }
 
 export function Login() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const from = (useLocation().state as { from?: string } | null)?.from ?? "/account";
+  const { user, loading, isStaff } = useAuth();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const destination = from ?? (isStaff ? "/admin" : "/account");
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<z.infer<typeof loginSchema>>({ resolver: zodResolver(loginSchema) });
-  if (user) return <Navigate to={from} replace />;
+  if (user) return loading ? <div className="container py-20"><Logo className="mx-auto h-16 w-36" /></div> : <Navigate to={destination} replace />;
   return (
     <Shell title="Sign in" footer={<>New here? <Link to="/register" state={{ from }} className="text-silver underline">Create an account</Link></>}>
       <form className="space-y-4" noValidate onSubmit={handleSubmit(async (v) => {
         const { error } = await supabase.auth.signInWithPassword(v);
-        if (error) toast.error(error.message); else navigate(from, { replace: true });
+        if (error) toast.error(error.message);
       })}>
         <Field label="Email" error={errors.email?.message}><Input type="email" autoComplete="email" {...register("email")} /></Field>
         <Field label="Password" error={errors.password?.message}><Input type="password" autoComplete="current-password" {...register("password")} /></Field>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ArrowRight, Crown, MoveUpRight, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { Logo } from "@/components/common/Logo";
 import { QueryBoundary } from "@/components/common/States";
-import { fetchBestSellers, fetchProducts, fetchSetting, fetchTestimonials, subscribeNewsletter } from "@/services/catalog";
+import { fetchBestSellers, fetchCategories, fetchProducts, fetchSetting, fetchTestimonials, subscribeNewsletter } from "@/services/catalog";
 import { errorMessage } from "@/lib/utils";
+import { productImage } from "@/lib/pricing";
+import { publicImageUrl } from "@/lib/supabase";
 
 function Section({ eyebrow, title, to, children }: { eyebrow: string; title: string; to?: string; children: React.ReactNode }) {
   return (
@@ -34,6 +36,8 @@ export default function Home() {
   const best = useQuery({ queryKey: ["products", "best"], queryFn: () => fetchBestSellers(4) });
   const exclusive = useQuery({ queryKey: ["products", "exclusive"], queryFn: () => fetchProducts({ exclusive: true, limit: 4 }) });
   const testimonials = useQuery({ queryKey: ["testimonials"], queryFn: fetchTestimonials });
+  const categories = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const categorySamples = useQueries({ queries: (categories.data ?? []).map((category) => ({ queryKey: ["category-sample", category.id], queryFn: () => fetchProducts({ categorySlug: category.slug, limit: 1 }), staleTime: 60_000 })) });
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
@@ -92,6 +96,21 @@ export default function Home() {
           {Array.from({ length: 4 }, (_, i) => <span key={i}>Strength <i className="not-italic text-primary">·</i> Confidence <i className="not-italic text-primary">·</i> Individuality <i className="not-italic text-primary">·</i></span>)}
         </div>
       </div>
+
+      {!!categories.data?.length && <section className="section container">
+        <div className="mb-8"><p className="eyebrow mb-3">Explore the edit</p><h2 className="text-5xl leading-none md:text-7xl">Shop by category</h2></div>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+          {categories.data.map((category, index) => {
+            const product = categorySamples[index]?.data?.[0];
+            const image = product ? productImage(product)[0] : undefined;
+            return <Link key={category.id} to={`/shop?category=${encodeURIComponent(category.slug)}`} className="group relative isolate flex aspect-[4/5] min-h-40 items-end overflow-hidden border border-border bg-secondary p-4 transition-colors hover:border-primary/60 md:p-5">
+              {image && <img src={publicImageUrl(image.storage_path)} alt={image.alt ?? `${category.name} product`} loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover opacity-60 transition-transform duration-500 group-hover:scale-105" />}
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/15 to-transparent" />
+              <span><span className="block text-xs uppercase tracking-[0.18em] text-primary">0{index + 1}</span><span className="mt-1 block font-display text-3xl leading-none md:text-4xl">{category.name}</span><span className="mt-2 block text-sm text-foreground/75">Explore →</span></span>
+            </Link>;
+          })}
+        </div>
+      </section>}
 
       <section className="section container">
         <div className="grid gap-8 md:grid-cols-[.78fr_1.22fr] md:items-end">

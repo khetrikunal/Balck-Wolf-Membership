@@ -14,25 +14,44 @@ const Ctx = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [sessionResolved, setSessionResolved] = useState(false);
+  const [rolesForUserId, setRolesForUserId] = useState<string | null>(null);
   const qc = useQueryClient();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => { setSession(data.session); if (!data.session) setLoading(false); });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => { setSession(s); if (!s) { setRoles([]); setLoading(false); qc.clear(); } });
+    let authEventReceived = false;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!authEventReceived) setSession(data.session);
+      setSessionResolved(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      authEventReceived = true;
+      setSession(s);
+      setSessionResolved(true);
+      if (!s) { setRoles([]); setRolesForUserId(null); qc.clear(); }
+    });
     return () => sub.subscription.unsubscribe();
   }, [qc]);
 
   // Roles are read from the database (my_roles RPC) — never from client-supplied claims.
   useEffect(() => {
-    if (!session) return;
+    if (!session) { setRoles([]); setRolesForUserId(null); return; }
     let cancelled = false;
-    supabase.rpc("my_roles").then(({ data }) => {
-      if (!cancelled) { setRoles((data as AppRole[]) ?? []); setLoading(false); }
-    });
+    const userId = session.user.id;
+    void (async () => {
+      try {
+        const { data, error } = await supabase.rpc("my_roles");
+        if (!cancelled) setRoles(error ? [] : (data as AppRole[]) ?? []);
+      } catch {
+        if (!cancelled) setRoles([]);
+      } finally {
+        if (!cancelled) setRolesForUserId(userId);
+      }
+    })();
     return () => { cancelled = true; };
-  }, [session?.user.id]);
+  }, [session?.user.id, session?.access_token]);
 
+  const loading = !sessionResolved || (!!session && rolesForUserId !== session.user.id);
   const value = useMemo<AuthState>(() => ({
     user: session?.user ?? null, session, loading, roles,
     isStaff: roles.length > 0,

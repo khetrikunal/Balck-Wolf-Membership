@@ -58,25 +58,22 @@ export default function App() {
             <Route path="checkout" element={<Checkout />} />
             <Route path="order/success" element={<OrderSuccess />} />
             <Route path="order/failure" element={<OrderFailure />} />
+            <Route path="account" element={<AccountLayout />}>
+              <Route index element={<Overview />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="orders/:id" element={<OrderDetails />} />
+              <Route path="membership" element={<MembershipPage />} />
+              <Route path="card" element={<CardPage />} />
+              <Route path="payments" element={<PaymentHistory />} />
+              <Route path="custom" element={<CustomRequests />} />
+              <Route path="custom/new" element={<NewCustomRequest />} />
+              <Route path="wishlist" element={<Wishlist />} />
+              <Route path="addresses" element={<Addresses />} />
+              <Route path="notifications" element={<Notifications />} />
+            </Route>
           </Route>
           <Route path="*" element={<EmptyState title="Page not found" />} />
-        </Route>
-
-        <Route element={<RequireAuth />}>
-          <Route path="account" element={<AccountLayout />}>
-            <Route index element={<Overview />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="orders/:id" element={<OrderDetails />} />
-            <Route path="membership" element={<MembershipPage />} />
-            <Route path="card" element={<CardPage />} />
-            <Route path="payments" element={<PaymentHistory />} />
-            <Route path="custom" element={<CustomRequests />} />
-            <Route path="custom/new" element={<NewCustomRequest />} />
-            <Route path="wishlist" element={<Wishlist />} />
-            <Route path="addresses" element={<Addresses />} />
-            <Route path="notifications" element={<Notifications />} />
-          </Route>
         </Route>
 
         {/* Admin: UI gate only — RLS and server functions enforce permissions. No public admin sign-up exists. */}

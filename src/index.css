@@ -49,6 +49,11 @@
   .surface { @apply border border-border bg-card; }
   .red-glow { background: radial-gradient(ellipse at 70% 45%, rgb(225 6 0 / .18), transparent 55%); }
   .font-accent { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; }
+  .nav-link { @apply relative whitespace-nowrap py-2 text-xs font-medium uppercase tracking-[0.12em] text-foreground/85 transition-colors hover:text-primary after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform hover:after:scale-x-100; }
+  .mobile-nav-link { @apply border-b border-border py-2.5 font-display text-2xl uppercase leading-none text-foreground transition-colors hover:text-primary; }
+  .account-content .rounded-lg { border-radius: var(--radius); }
+  .account-content .bg-card { background-color: hsl(var(--secondary)); }
+  .account-content .overflow-x-auto > table { min-width: 600px; }
   .marquee-track { animation: marquee 28s linear infinite; }
   .marquee-track:hover { animation-play-state: paused; }
   .skeleton { background: linear-gradient(100deg, hsl(var(--muted)) 20%, hsl(var(--border)) 38%, hsl(var(--muted)) 56%); background-size: 200% 100%; animation: shimmer 1.6s ease-in-out infinite; }
